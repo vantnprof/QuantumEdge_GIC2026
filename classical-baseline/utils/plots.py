@@ -59,7 +59,7 @@ def plot_financial_forecasts(
 
     axes[-1].set_xlabel("Date")
     fig.suptitle(f"One-step-ahead forecasts: {dataset_label} (test split)", fontsize=12)
-    fig.tight_layout()
+    fig.tight_layout(rect=[0, 0, 1, 0.97])
     path = PLOTS / f"forecasts_{dataset_label.lower().replace(' ', '_')}.png"
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
@@ -96,7 +96,7 @@ def plot_chaotic_forecasts(
 
     axes[-1].set_xlabel("Time step")
     fig.suptitle(f"One-step-ahead forecasts: {dataset_label} (first {n_show} test steps)", fontsize=12)
-    fig.tight_layout()
+    fig.tight_layout(rect=[0, 0, 1, 0.97])
     path = PLOTS / f"forecasts_{dataset_label.lower().replace('-', '_').replace(' ', '_')}.png"
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
@@ -150,7 +150,7 @@ def plot_metrics_heatmap(metrics_df: pd.DataFrame, qlike_cap: float = 5.0) -> Pa
     if has_qlike:
         _heatmap(
             pivot_qlike, ax2,
-            f"QLIKE (lower = better; ESN/LSTM excluded — values >1e4)",
+            f"QLIKE (lower = better; cells excluded where value > {qlike_cap})",
             fmt=".3f", cmap="YlGnBu",
         )
 
