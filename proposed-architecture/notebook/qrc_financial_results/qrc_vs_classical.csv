@@ -1,9 +1,11 @@
 model,rmse,qlike,source
+QRC-dual_ent_regime,0.000107,0.3582,quantum
 QRC-dual_ent,0.000108,0.3616,quantum
-QRC-dual_ent_regime,0.000110,0.3139,quantum
 QRC-dual_pauli,0.000112,0.3704,quantum
 ESN,0.000117,3072.9975,classical
-QRC-regime_conditioned,0.000118,0.3190,quantum
+QRC-regime_conditioned,0.000119,0.3506,quantum
+QRC-dual_ent_regime_qlike,0.000119,0.2994,quantum
+QRC-dual_ent_qlike,0.000120,0.3062,quantum
 ARIMA,0.000125,0.3501,classical
 HAR-RV,0.000128,0.3486,classical
 XGBoost,0.000131,0.3962,classical

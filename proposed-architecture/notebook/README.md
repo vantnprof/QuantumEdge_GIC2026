@@ -30,17 +30,25 @@ Dual-timescale QRC for one-day-ahead S&P 500 realized variance forecasting.
 
 ### Key results (800-day test window, 80/20 split)
 
-| Model | RMSE | QLIKE | Regime Acc | Sharpe |
-|---|---|---|---|---|
-| **QRC dual+ent+regime** | **1.08e-4** | **0.314** | **79.5%** | **1.628** |
-| QRC dual+ent | 1.08e-4 | 0.362 | 74.4% | 1.208 |
-| HAR-RV (classical) | 1.28e-4 | 0.348 | 65.9% | 1.268 |
-| QRC single-long+ent | 1.32e-4 | 0.374 | 72.6% | 1.138 |
-| ESN-500-log (classical reservoir) | see notebook | see notebook | — | — |
-| Buy-and-hold Sharpe | — | — | — | 1.266 |
+Two readout variants using the **same quantum features**, different training loss:
 
-**QRC dual vs HAR-RV: +15.6% RMSE, +9.8% QLIKE**
-**QRC dual vs single reservoir: +18.3% RMSE**
+| Model | Readout | RMSE | QLIKE | vs HAR RMSE | vs HAR QLIKE |
+|---|---|---|---|---|---|
+| **QRC dual+ent+regime** | **QLIKE loss** | **1.19e-4** | **0.299** | **+6.6%** | **+14.1%** |
+| QRC dual+ent+regime | Ridge (L2) | 1.07e-4 | 0.358 | +15.9% | −2.9% |
+| QRC dual+ent | Ridge (L2) | 1.08e-4 | 0.362 | +15.6% | −4.0% |
+| HAR-RV (classical) | — | 1.28e-4 | 0.348 | 0% | 0% |
+| QRC single-long+ent | Ridge (L2) | 1.32e-4 | 0.374 | −3.3% | −7.5% |
+| ESN-500-log | Ridge (L2) | see notebook | see notebook | — | — |
+
+**QLIKE readout** beats HAR-RV on both RMSE (+6.6%) and QLIKE (+14.1%).  
+**Ridge readout** shows stronger RMSE (+15.9%) but trades off slightly on QLIKE.
+
+The QLIKE readout is motivated by the evaluation criterion (matching training loss to the evaluation metric is standard practice). Lambda is selected on a held-out validation slice from training data only — no test leakage.
+
+The key architectural claim: **the same quantum feature space supports both objectives**. Switching the readout loss from L2 to QLIKE moves the model from "RMSE-optimal" to "QLIKE-optimal" without changing a single qubit.
+
+_HMM regime posteriors use the causal forward filter (P(state_t | obs[0..t])) — no look-ahead bias._
 
 ### Section guide
 
@@ -52,18 +60,18 @@ Dual-timescale QRC for one-day-ahead S&P 500 realized variance forecasting.
 | 11 | Ablation plots and forecast visualisation |
 | 12–13 | Paper numbers, Phase 3 notes |
 | 14 | Qubit count sweep — n ∈ {5, 9, 15} on financial data |
-| 15 | Noise robustness — depolarizing + amplitude damping (IBM Heron r2 levels) |
+| 15 | Noise robustness — depolarizing + amplitude damping (IBM Kingston levels) |
 | 16 | IBM hardware section — see note below |
 
 ### IBM hardware note
 
 Section 16 in the notebook requires an IBM Quantum token and available quota. The standalone
 script `run_aer_noise.py` provides an equivalent comparison using **local Aer noise
-simulation at IBM Heron r2 noise levels** (depolarizing p=0.003/gate, amplitude damping
+simulation at IBM Kingston noise levels** (depolarizing p=0.003/gate, amplitude damping
 γ=0.0002), which requires no quota and produces `final_comparison_all_models.png`.
 
 **This is not real hardware execution.** It is a noise simulation calibrated to match
-IBM Heron r2 error rates. The plot and JSON results label this explicitly as
+IBM Kingston error rates. The plot and JSON results label this explicitly as
 "IBM-level noise" — not "IBM hardware". Real hardware results would require an IBM account
 with sufficient Open Plan quota (~10 minutes for 50 steps × 2 circuits × individual jobs,
 or a paid Session plan for batched execution).

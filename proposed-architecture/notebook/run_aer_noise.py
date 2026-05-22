@@ -4,7 +4,7 @@ run_aer_noise.py
 Noise-level hardware simulation using PennyLane default.mixed.
 
 Depolarizing (p=0.003/gate) + amplitude damping (gamma=0.0002) matching
-IBM Heron r2 calibration levels.  No IBM quota consumed.
+IBM Kingston noise profile.  No IBM quota consumed.
 
 Tests 4 models on N_HW_STEPS test days:
   1. HAR-RV                   classical baseline
@@ -59,7 +59,7 @@ RESULTS_DIR  = Path("qrc_financial_results")
 RESULTS_DIR.mkdir(exist_ok=True)
 N_HW_STEPS   = 50
 
-# IBM Heron r2 noise levels
+# IBM Kingston noise profile
 P_DEPOL  = 0.003
 GAMMA_AD = 0.0002
 
@@ -171,10 +171,23 @@ def predict_regimes(rv):
                      for x in hmm.predict(np.log(np.asarray(rv)+1e-10).reshape(-1,1))])
 
 def regime_post(rv):
-    raw = hmm.predict_proba(np.log(np.asarray(rv)+1e-10).reshape(-1,1))
-    out = np.zeros_like(raw)
+    """Causal forward filter — P(state_t | obs[0..t]), no look-ahead."""
+    from scipy.stats import norm as _gauss
+    log_obs = np.log(np.asarray(rv, dtype=float) + 1e-10)
+    n = len(log_obs); K = hmm.n_components
+    B = np.zeros((n, K))
+    for k in range(K):
+        mu = hmm.means_[k, 0]; sigma = np.sqrt(hmm.covars_[k, 0, 0])
+        B[:, k] = _gauss.pdf(log_obs, mu, sigma)
+    alpha = np.zeros((n, K))
+    alpha[0] = hmm.startprob_ * B[0]
+    sc = alpha[0].sum(); alpha[0] /= sc if sc > 0 else 1.0
+    for t in range(1, n):
+        alpha[t] = (alpha[t-1] @ hmm.transmat_) * B[t]
+        sc = alpha[t].sum(); alpha[t] /= sc if sc > 0 else 1.0
+    out = np.zeros_like(alpha)
     for rs, ss in state_map.items():
-        out[:, ss] = raw[:, rs]
+        out[:, ss] = alpha[:, rs]
     return out
 
 all_post = regime_post(df["rv"].values)
