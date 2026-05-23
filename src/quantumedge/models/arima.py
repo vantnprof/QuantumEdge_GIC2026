@@ -51,6 +51,16 @@ def run_arima_financial(financial_split: dict) -> np.ndarray:
     return np.clip(preds, 1e-10, None)
 
 
+def run_arima_financial_log(financial_split: dict) -> np.ndarray:
+    """ARIMA(5,0,0) on log(RV) — log-space for fair QLIKE comparison. Outputs exp(pred)."""
+    train = financial_split["train"]
+    test  = financial_split["test"]
+    log_train_rv = np.log(np.clip(train["rv"].values, 1e-12, None))
+    log_test_rv  = np.log(np.clip(test["rv"].values,  1e-12, None))
+    log_preds = _rolling_forecast(log_train_rv, log_test_rv, order=(5, 0, 0))
+    return np.exp(log_preds)
+
+
 def run_arima_vix(vix_split: dict) -> np.ndarray:
     """ARIMA(1,1,0) on VIX level — predicts next-day VIX."""
     train = vix_split["train"]

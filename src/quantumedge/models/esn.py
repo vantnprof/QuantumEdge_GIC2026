@@ -59,6 +59,22 @@ def run_esn_financial(financial_split: dict, **kwargs) -> np.ndarray:
     return run_esn(X_train, y_train, X_test, **kwargs)
 
 
+def run_esn_financial_log(financial_split: dict, **kwargs) -> np.ndarray:
+    """Log-space ESN: log-transforms RV features and target, outputs exp(pred)."""
+    raw_cols = ["rv_d", "rv_w", "rv_m", "log_ret", "vix", "gk", "vix_rv_spread"]
+    train = financial_split["train"]
+    test  = financial_split["test"]
+
+    def _log_feats(df):
+        X = df[raw_cols].values.copy()
+        X[:, :3] = np.log(np.clip(X[:, :3], 1e-12, None))
+        return X
+
+    y_tr_log = np.log(np.clip(train["target_rv"].values, 1e-12, None))
+    y_pred_log = run_esn(_log_feats(train), y_tr_log, _log_feats(test), **kwargs)
+    return np.exp(y_pred_log)
+
+
 def run_esn_vix(vix_split: dict, **kwargs) -> np.ndarray:
     """ESN predicting next-day VIX level."""
     feature_cols = ["vix", "vix_w", "vix_m", "vix_log_ret"]

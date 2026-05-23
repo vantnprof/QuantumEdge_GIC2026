@@ -2,13 +2,13 @@ model,rmse,qlike,source
 QRC-dual_ent_regime,0.000107,0.3582,quantum
 QRC-dual_ent,0.000108,0.3616,quantum
 QRC-dual_pauli,0.000112,0.3704,quantum
-ESN,0.000117,3072.9975,classical
+LSTM-log,0.000117,0.4207,classical
 QRC-regime_conditioned,0.000119,0.3506,quantum
 QRC-dual_ent_regime_qlike,0.000119,0.2994,quantum
+ESN-log,0.000120,0.3752,classical
 QRC-dual_ent_qlike,0.000120,0.3062,quantum
-ARIMA,0.000125,0.3501,classical
+XGBoost-log,0.000127,0.3791,classical
 HAR-RV,0.000128,0.3486,classical
-XGBoost,0.000131,0.3962,classical
 QRC-single_long_ent,0.000132,0.3738,quantum
+ARIMA-log,0.000137,0.4196,classical
 GARCH,0.000156,0.4860,classical
-LSTM,0.000547,268094.7669,classical
