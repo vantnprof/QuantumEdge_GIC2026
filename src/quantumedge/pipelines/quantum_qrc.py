@@ -251,6 +251,12 @@ def run_quantum_qrc(
     datasets: list[str],
     backend: str = "statevector",
     n_qubits: int = DEFAULT_N_QUBITS,
+    short_j: float = 0.3,
+    short_h: float = 1.0,
+    short_depth: int = 2,
+    long_j: float = 1.2,
+    long_h: float = 0.4,
+    long_depth: int = 6,
     n_train: int | None = None,
     n_test: int | None = None,
     device_name: str | None = None,
@@ -266,13 +272,25 @@ def run_quantum_qrc(
     settings = ensure_runtime_dirs()
     n_train, n_test = _default_split(backend, n_train, n_test)
     datasets = [_normalise_dataset_name(ds) for ds in datasets]
-    short_cfg, long_cfg = make_reservoir_pair(n_qubits=n_qubits)
+    short_cfg, long_cfg = make_reservoir_pair(
+        n_qubits=n_qubits,
+        short_coupling_j=short_j,
+        short_transverse_h=short_h,
+        short_trotter_depth=short_depth,
+        long_coupling_j=long_j,
+        long_transverse_h=long_h,
+        long_trotter_depth=long_depth,
+    )
 
     _ts("Quantum QRC configuration")
     print(f"  backend       : {backend}")
     print(f"  datasets      : {', '.join(datasets)}")
     print(f"  split         : train={n_train}, test={n_test}")
-    print(f"  reservoirs    : n={n_qubits}, short p={short_cfg.trotter_depth}, long p={long_cfg.trotter_depth}")
+    print(
+        "  reservoirs    : "
+        f"n={n_qubits}, short J={short_cfg.coupling_j}, h={short_cfg.transverse_h}, p={short_cfg.trotter_depth}; "
+        f"long J={long_cfg.coupling_j}, h={long_cfg.transverse_h}, p={long_cfg.trotter_depth}"
+    )
 
     all_records = []
     all_predictions: dict[str, dict[str, dict]] = {}
@@ -375,6 +393,12 @@ def main(argv: list[str] | None = None) -> pd.DataFrame:
         help="Quantum execution backend.",
     )
     parser.add_argument("--n-qubits", type=int, default=DEFAULT_N_QUBITS)
+    parser.add_argument("--short-j", type=float, default=0.3)
+    parser.add_argument("--short-h", type=float, default=1.0)
+    parser.add_argument("--short-depth", type=int, default=2)
+    parser.add_argument("--long-j", type=float, default=1.2)
+    parser.add_argument("--long-h", type=float, default=0.4)
+    parser.add_argument("--long-depth", type=int, default=6)
     parser.add_argument("--n-train", type=int, default=None)
     parser.add_argument("--n-test", type=int, default=None)
     parser.add_argument("--device-name", default=None, help="PennyLane statevector device override.")
@@ -391,6 +415,12 @@ def main(argv: list[str] | None = None) -> pd.DataFrame:
         datasets=args.datasets,
         backend=args.backend,
         n_qubits=args.n_qubits,
+        short_j=args.short_j,
+        short_h=args.short_h,
+        short_depth=args.short_depth,
+        long_j=args.long_j,
+        long_h=args.long_h,
+        long_depth=args.long_depth,
         n_train=args.n_train,
         n_test=args.n_test,
         device_name=args.device_name,

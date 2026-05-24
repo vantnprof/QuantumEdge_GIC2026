@@ -133,6 +133,210 @@ artifacts/results/quantum_qrc_predictions.npz
 artifacts/results/plots/quantum_qrc_forecasts.png
 ```
 
+## Generate The Report Figure
+
+Fast actual-run check. This runs QRC only on a tiny Mackey-Glass split and
+generates a figure from the metrics produced by that run:
+
+```bash
+python scripts/make_report_figure.py \
+  --dataset mackey_glass \
+  --no-run-classical \
+  --quantum-n-qubits 3 \
+  --quantum-n-train 8 \
+  --quantum-n-test 4 \
+  --device-name default.qubit \
+  --progress-every 0 \
+  --basename actual_qrc_smoke
+```
+
+Full 800-day report-style run for S&P 500 RV. This runs the classical pipeline
+and the QRC variants, then builds the figure from actual run metrics:
+
+```bash
+python scripts/make_report_figure.py \
+  --dataset sp500_rv \
+  --quantum-n-qubits 9 \
+  --quantum-n-train 3200 \
+  --quantum-n-test 800 \
+  --progress-every 250 \
+  --basename actual_sp500_800day
+```
+
+Outputs:
+
+```text
+artifacts/results/figures/<basename>.png
+artifacts/results/figures/<basename>.pdf
+artifacts/results/figures/<basename>_data.csv
+```
+
+Use existing classical metrics but rerun QRC:
+
+```bash
+python scripts/make_report_figure.py \
+  --dataset sp500_rv \
+  --no-run-classical \
+  --classical-csv artifacts/results/metrics.csv \
+  --quantum-n-qubits 5 \
+  --quantum-n-train 500 \
+  --quantum-n-test 100 \
+  --basename actual_sp500_qrc_5q
+```
+
+Only recreate the old fixed-value presentation figure:
+
+```bash
+python scripts/make_report_figure.py \
+  --reported-only \
+  --basename reported_summary_figure
+```
+
+## Quantum Variants From The Notebooks
+
+The statevector command runs these notebook variants in one execution:
+
+```text
+QRC dual Pauli
+QRC dual Pauli+Ent
+QRC single long Pauli+Ent
+```
+
+Run the exact Phase 2 notebook ablation:
+
+```bash
+python -m quantumedge.pipelines.quantum_qrc \
+  --datasets mackey_glass lorenz \
+  --backend statevector \
+  --n-qubits 9 \
+  --short-j 0.3 \
+  --short-h 1.0 \
+  --short-depth 2 \
+  --long-j 1.2 \
+  --long-h 0.4 \
+  --long-depth 6 \
+  --n-train 1000 \
+  --n-test 500
+```
+
+Run a smaller version of the same ablation:
+
+```bash
+python -m quantumedge.pipelines.quantum_qrc \
+  --datasets mackey_glass lorenz \
+  --backend statevector \
+  --n-qubits 5 \
+  --n-train 200 \
+  --n-test 100 \
+  --output-prefix qrc_5q_small
+```
+
+Run the hardware-compatible notebook variants:
+
+```text
+QRC dual Pauli
+QRC single long Pauli
+```
+
+Aer hardware-shaped run:
+
+```bash
+python -m quantumedge.pipelines.quantum_qrc \
+  --backend aer \
+  --datasets mackey_glass \
+  --n-qubits 9 \
+  --n-train 40 \
+  --n-test 10 \
+  --progress-every 10 \
+  --output-prefix qrc_aer_hw_shape
+```
+
+IBM hardware-shaped run:
+
+```bash
+export QE_IBM_TOKEN="your_token"
+export QE_IBM_INSTANCE="your_instance"
+
+python -m quantumedge.pipelines.quantum_qrc \
+  --backend ibm \
+  --datasets mackey_glass \
+  --n-qubits 9 \
+  --n-train 40 \
+  --n-test 10 \
+  --progress-every 10 \
+  --output-prefix qrc_ibm_hw_shape
+```
+
+Qubit-count sweep from the Phase 2 notes:
+
+```bash
+for n in 5 8 10 12 15; do
+  python -m quantumedge.pipelines.quantum_qrc \
+    --datasets mackey_glass lorenz \
+    --backend statevector \
+    --n-qubits "$n" \
+    --n-train 200 \
+    --n-test 100 \
+    --output-prefix "qrc_${n}q"
+done
+```
+
+Trotter-depth sweep from the Phase 2 notes:
+
+```bash
+for p in 2 4 6; do
+  python -m quantumedge.pipelines.quantum_qrc \
+    --datasets mackey_glass lorenz \
+    --backend statevector \
+    --n-qubits 5 \
+    --short-depth "$p" \
+    --long-depth "$p" \
+    --n-train 200 \
+    --n-test 100 \
+    --output-prefix "qrc_depth_${p}"
+done
+```
+
+Memory-separation sweep:
+
+```bash
+python -m quantumedge.pipelines.quantum_qrc \
+  --datasets mackey_glass lorenz \
+  --backend statevector \
+  --n-qubits 5 \
+  --short-j 0.1 \
+  --short-h 1.0 \
+  --short-depth 2 \
+  --long-j 1.5 \
+  --long-h 0.3 \
+  --long-depth 6 \
+  --n-train 200 \
+  --n-test 100 \
+  --output-prefix qrc_memory_separation
+```
+
+Finance extension variants:
+
+```bash
+python -m quantumedge.pipelines.quantum_qrc \
+  --datasets sp500_rv \
+  --backend statevector \
+  --n-qubits 5 \
+  --n-train 500 \
+  --n-test 100 \
+  --output-prefix qrc_sp500_rv
+```
+
+```bash
+python -m quantumedge.pipelines.quantum_qrc \
+  --datasets vix \
+  --backend statevector \
+  --n-qubits 5 \
+  --n-train 500 \
+  --n-test 100 \
+  --output-prefix qrc_vix
+```
+
 ## Docker
 
 Build and run the default stack:
