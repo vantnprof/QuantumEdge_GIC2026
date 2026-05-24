@@ -191,6 +191,11 @@ cython_debug/
 # Ruff stuff:
 .ruff_cache/
 
+# QuantumEdge runtime artifacts
+/artifacts/
+/data/
+classical-baseline/results/
+
 # PyPI configuration file
 .pypirc
 
@@ -210,3 +215,5 @@ __marimo__/
 classical-baseline/data/raw/
 classical-baseline/data/processed/
 classical-baseline/=*
+.vscode
+classical-baseline/

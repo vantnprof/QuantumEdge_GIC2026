@@ -1,0 +1,5 @@
+pennylane>=0.40
+pennylane-lightning>=0.40
+pennylane-qiskit>=0.40
+qiskit-aer>=0.15
+qiskit-ibm-runtime>=0.31

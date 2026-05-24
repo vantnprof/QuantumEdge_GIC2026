@@ -1,5 +1,10 @@
 # Classical Baselines — GIC 2026 Quantum Reservoir Computing
 
+> Source code has moved to the installable `quantumedge` package under
+> `src/quantumedge`. This folder is kept as a compatibility wrapper and for
+> historical result artifacts. Run `python classical-baseline/main.py` or the
+> preferred `python -m quantumedge.pipelines.classical_baselines`.
+
 Full classical benchmark pipeline for the **GIC 2026 Finance Track** (Quantum Reservoir Computing for Financial Volatility Prediction). Every model here is a target the QRC system must beat — or at minimum be honest about where it doesn't.
 
 **Test period: 2022–2025 (801 trading days, 80/20 temporal split)**
