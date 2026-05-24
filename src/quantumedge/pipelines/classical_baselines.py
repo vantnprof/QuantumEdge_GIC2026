@@ -95,43 +95,39 @@ def run_pipeline(write_plots: bool = True) -> pd.DataFrame:
     print(f"  RMSE={m['rmse']:.6f}  QLIKE={m['qlike']:.4f}")
     print(f"  coefs: {har_coefs}  sum={sum(v for k,v in har_coefs.items() if k!='intercept'):.4f}")
 
-    print("\n[SP500 RV — ESN]")
-    from quantumedge.models.esn import run_esn_financial, run_esn_vix, run_esn_chaotic
-    esn_sp500 = run_esn_financial(fin_split)
-    fin_preds["ESN"] = esn_sp500
+    print("\n[SP500 RV — ESN-log (log-space, valid QLIKE)]")
+    from quantumedge.models.esn import run_esn_financial_log, run_esn_vix, run_esn_chaotic
+    esn_sp500 = run_esn_financial_log(fin_split)
+    fin_preds["ESN-log"] = esn_sp500
     m = compute_all(y_true_sp500, esn_sp500, include_qlike=True)
-    records.append({"dataset": "sp500_rv", "model": "ESN", **m})
+    records.append({"dataset": "sp500_rv", "model": "ESN-log", **m})
     print(f"  RMSE={m['rmse']:.6f}  QLIKE={m['qlike']:.4f}")
 
-    print("\n[SP500 RV — LSTM]")
-    from quantumedge.models.lstm import run_lstm_financial, run_lstm_vix, run_lstm_chaotic
-    lstm_sp500, loss_sp500 = run_lstm_financial(fin_split)
-    fin_preds["LSTM"] = lstm_sp500
-    seq_skip_fin = 21  # seq_len - 1: LSTM input ends at X[t], target is y[t] = RV_{t+1}
+    print("\n[SP500 RV — LSTM-log (log-space, valid QLIKE)]")
+    from quantumedge.models.lstm import run_lstm_financial_log, run_lstm_vix, run_lstm_chaotic
+    lstm_sp500, loss_sp500 = run_lstm_financial_log(fin_split)
+    fin_preds["LSTM-log"] = lstm_sp500
+    seq_skip_fin = 21  # seq_len - 1
     m = compute_all(y_true_sp500[seq_skip_fin:], lstm_sp500, include_qlike=True)
-    records.append({"dataset": "sp500_rv", "model": "LSTM", **m})
+    records.append({"dataset": "sp500_rv", "model": "LSTM-log", **m})
     lstm_losses["sp500_rv"] = loss_sp500
     print(f"  RMSE={m['rmse']:.6f}  QLIKE={m['qlike']:.4f}")
 
-    print("\n[SP500 RV — XGBoost]")
-    from quantumedge.models.xgboost_model import (
-        run_xgboost_chaotic,
-        run_xgboost_financial,
-        run_xgboost_vix,
-    )
-    xgb_sp500, xgb_sp500_model = run_xgboost_financial(fin_split)
-    fin_preds["XGBoost"] = xgb_sp500
+    print("\n[SP500 RV — XGBoost-log (log-space, valid QLIKE)]")
+    from quantumedge.models.xgboost_model import run_xgboost_financial_log, run_xgboost_vix, run_xgboost_chaotic
+    xgb_sp500, xgb_sp500_model = run_xgboost_financial_log(fin_split)
+    fin_preds["XGBoost-log"] = xgb_sp500
     m = compute_all(y_true_sp500, xgb_sp500, include_qlike=True)
-    records.append({"dataset": "sp500_rv", "model": "XGBoost", **m})
+    records.append({"dataset": "sp500_rv", "model": "XGBoost-log", **m})
     xgb_models["sp500_rv"] = xgb_sp500_model
     print(f"  RMSE={m['rmse']:.6f}  QLIKE={m['qlike']:.4f}")
 
-    print("\n[SP500 RV — ARIMA(5,0,0)]")
-    from quantumedge.models.arima import run_arima_financial, run_arima_vix
-    arima_sp500 = run_arima_financial(fin_split)
-    fin_preds["ARIMA"] = arima_sp500
+    print("\n[SP500 RV — ARIMA-log (log-space, valid QLIKE)]")
+    from quantumedge.models.arima import run_arima_financial_log, run_arima_vix
+    arima_sp500 = run_arima_financial_log(fin_split)
+    fin_preds["ARIMA-log"] = arima_sp500
     m = compute_all(y_true_sp500, arima_sp500, include_qlike=True)
-    records.append({"dataset": "sp500_rv", "model": "ARIMA", **m})
+    records.append({"dataset": "sp500_rv", "model": "ARIMA-log", **m})
     print(f"  RMSE={m['rmse']:.6f}  QLIKE={m['qlike']:.4f}")
 
     # ------------------------------------------------------------------ #
@@ -141,16 +137,16 @@ def run_pipeline(write_plots: bool = True) -> pd.DataFrame:
     for model_name, pred in [
         ("GARCH", garch_sp500),
         ("HAR-RV", har_sp500),
-        ("ESN", esn_sp500),
-        ("XGBoost", xgb_sp500),
-        ("ARIMA", arima_sp500),
+        ("ESN-log", esn_sp500),
+        ("XGBoost-log", xgb_sp500),
+        ("ARIMA-log", arima_sp500),
     ]:
         y_t = y_true_sp500
         m = compute_all(y_t, pred, include_qlike=True)
         records.append({"dataset": "oxford_man_rv", "model": model_name, **m})
-    # LSTM: aligned length
+    # LSTM-log: aligned length
     m = compute_all(y_true_sp500[seq_skip_fin:], lstm_sp500, include_qlike=True)
-    records.append({"dataset": "oxford_man_rv", "model": "LSTM", **m})
+    records.append({"dataset": "oxford_man_rv", "model": "LSTM-log", **m})
     print("  oxford_man_rv rows added (identical to sp500_rv — GK fallback used)")
 
     # ------------------------------------------------------------------ #

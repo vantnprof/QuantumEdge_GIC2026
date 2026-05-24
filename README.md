@@ -1,218 +1,140 @@
 # QuantumEdge GIC 2026
 
-Project code for classical volatility baselines and the proposed dual-timescale
-Quantum Reservoir Computing method.
+**Team:** QuantumEdge | **Track:** Dynamic Systems Forecasting — Financial Volatility Prediction  
+**Competition:** Global Investment Challenge (GIC) 2026
 
-## Setup
+Dual-timescale Quantum Reservoir Computing for financial volatility forecasting and regime detection.
 
-Run from the repository root:
+## Key Results
 
-```bash
-cd QuantumEdge_GIC2026
+| Model | RMSE (RV) | QLIKE | Regime Acc | Sharpe |
+|---|---|---|---|---|
+| **QRC dual\_ent\_regime** (ours) | **1.07e-4** | **0.358** | **75.1%** | **1.268** |
+| QRC dual\_ent (ours) | 1.08e-4 | 0.362 | 74.4% | 1.208 |
+| LSTM-log | 1.26e-4 | 0.383 | 65.8% | 1.719 |
+| XGBoost-log | 1.27e-4 | 0.379 | 65.7% | 1.283 |
+| HAR-RV (classical) | 1.28e-4 | 0.348 | 65.9% | 1.268 |
+| GARCH(1,1) | 1.56e-4 | 0.486 | 31.5% | 0.663 |
+
+**QRC-dual\_ent\_regime vs HAR-RV: +15.9% RMSE, QLIKE readout variant: +14.1% QLIKE**  
+Test window: 801 days (20% holdout), S&P 500 realized variance (Garman-Klass).  
+All baselines use log-space preprocessing on identical train/test split.
+
+---
+
+## Architecture
+
+Two fixed Ising Hamiltonian reservoirs process complementary timescales simultaneously:
+
+**Short-memory reservoir** (J=0.3, h=1.0, depth=2, features: log\_rv\_d / log\_ret / log\_gk)  
+**Long-memory reservoir** (J=1.2, h=0.4, depth=6, features: log\_rv\_w / log\_rv\_m / vix / vix\_rv\_spread)
+
+Both use 9 qubits with multi-feature cyclic encoding (`RY(feature_angles[wire % n_features])`).  
+Features: `⟨Zi⟩`, `⟨ZiZi+1⟩` (Pauli) + half-chain entanglement energies `−log λk`.  
+Readout: Ridge regression with 3-state HMM regime conditioning.  
+RV predictions: `exp(inverse_transform(angle))` — guarantees strict positivity.
+
+---
+
+## Repository Structure
+
+```
+QuantumEdge_GIC2026/
+│
+├── proposed-architecture/          ← QRC implementation (main submission)
+│   ├── notebook/
+│   │   ├── QuantumEdge_QRC_Financial.ipynb          ← Main financial forecasting notebook
+│   │   ├── QuantumEdge_QRC_MNIST.ipynb              ← Expressivity benchmark (n=5/10/15 qubits)
+│   │   ├── data/raw/                                ← SP500, VIX, Oxford-Man CSVs
+│   │   ├── run_classical_benchmark.py               ← Fair classical baseline runner
+│   │   └── qrc_financial_results/                   ← Plots and feature matrices
+│   ├── qrc/
+│   │   ├── circuits.py     ← PennyLane QNode factory (statevector + hardware)
+│   │   ├── features.py     ← Pauli + entanglement feature extractors
+│   │   ├── readout.py      ← Ridge readouts + RegimeReadout
+│   │   ├── encoding.py     ← MinMaxScaler angle encoding
+│   │   └── config.py       ← ReservoirConfig dataclass
+│   └── pyproject.toml              ← uv environment spec
+│
+├── classical-baseline/             ← Full classical benchmark pipeline
+│   ├── models/             ← GARCH, HAR-RV, ARIMA, ESN, LSTM, XGBoost
+│   ├── utils/              ← Data loading, features, metrics, plots
+│   ├── results/            ← metrics.csv + PNG plots
+│   └── main.py
+│
+├── src/quantumedge/                ← Package (data, features, models, pipelines, API)
+├── phaseII/                        ← Phase 2 prototype (archived)
+└── phaseI/                         ← Phase 1 submission (archived)
 ```
 
-Use your existing conda environment:
+---
+
+## Reproducing Results
+
+### Proposed QRC method (uv)
 
 ```bash
-conda activate quantumedge_env
+cd proposed-architecture
+uv sync           # creates .venv with PennyLane, sklearn, yfinance, hmmlearn
+
+# Run financial forecasting notebook
+.venv/bin/jupyter nbconvert \
+  --to notebook --execute \
+  --ExecutePreprocessor.timeout=3600 \
+  notebook/QuantumEdge_QRC_Financial.ipynb \
+  --output notebook/QuantumEdge_QRC_Financial_executed.ipynb
+
+# Run fair classical baseline comparison
+.venv/bin/python notebook/run_classical_benchmark.py
+```
+
+### Classical baselines
+
+```bash
+cd classical-baseline
+pip install -r requirements.txt
+python main.py
+```
+
+### src/quantumedge package
+
+```bash
 python -m pip install -r requirements/dev.txt
 python -m pip install -e . --no-deps
-```
 
-Or create a fresh virtual environment:
-
-```bash
-python -m venv .venv
-. .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements/dev.txt
-python -m pip install -e . --no-deps
-```
-
-Verify the package is importable:
-
-```bash
-python -c "import quantumedge; print(quantumedge.__file__)"
-```
-
-Run tests:
-
-```bash
-pytest -q
-```
-
-If you see `ModuleNotFoundError: No module named 'quantumedge'`, run:
-
-```bash
-export PYTHONPATH="$PWD/src:$PYTHONPATH"
-```
-
-## Run Classical Baselines
-
-This runs data loading, feature engineering, all classical models, metrics, and
-plots:
-
-```bash
+# Classical baselines pipeline
 python -m quantumedge.pipelines.classical_baselines
-```
 
-Run without plots:
-
-```bash
-python -m quantumedge.pipelines.classical_baselines --skip-plots
-```
-
-Legacy wrapper:
-
-```bash
-python classical-baseline/main.py
-```
-
-Classical outputs:
-
-```text
-artifacts/results/metrics.csv
-artifacts/results/plots/
-```
-
-## Run Proposed Quantum Method
-
-Full proposed simulator QRC on Mackey-Glass and Lorenz:
-
-```bash
+# Quantum QRC pipeline
 python -m quantumedge.pipelines.quantum_qrc \
   --datasets mackey_glass lorenz \
   --backend statevector
 ```
 
-Fast smoke test:
+---
 
-```bash
-python -m quantumedge.pipelines.quantum_qrc \
-  --datasets mackey_glass \
-  --backend statevector \
-  --n-qubits 3 \
-  --n-train 8 \
-  --n-test 4 \
-  --device-name default.qubit \
-  --progress-every 0 \
-  --skip-plots
-```
+## Hardware Path
 
-Small Aer hardware-shaped run:
+`proposed-architecture/notebook/qrc_financial_hardware.py` provides a hardware-compatible
+companion using Pauli-only observables (EstimatorV2) for IBM Quantum.
 
-```bash
-python -m quantumedge.pipelines.quantum_qrc \
-  --backend aer \
-  --datasets mackey_glass \
-  --n-train 40 \
-  --n-test 10 \
-  --progress-every 10
-```
+Noise test: Aer simulation with IBM Kingston depolarizing profile (p=0.003/gate, γ=0.0002).
 
-IBM hardware spot-check:
-
-```bash
-export QE_IBM_TOKEN="your_token"
-export QE_IBM_INSTANCE="your_instance"
-
-python -m quantumedge.pipelines.quantum_qrc \
-  --backend ibm \
-  --datasets mackey_glass \
-  --n-train 40 \
-  --n-test 10 \
-  --progress-every 10
-```
-
-Quantum outputs:
-
-```text
-artifacts/results/quantum_qrc_metrics.csv
-artifacts/results/quantum_qrc_paper_metrics.csv
-artifacts/results/quantum_qrc_predictions.npz
-artifacts/results/plots/quantum_qrc_forecasts.png
-```
+---
 
 ## Docker
 
-Build and run the default stack:
-
 ```bash
 docker compose up --build
+docker compose run --rm pipeline        # classical jobs
+docker compose --profile quantum run --rm quantum-sim   # QRC simulator
 ```
 
-Run the classical jobs:
+---
 
-```bash
-docker compose run --rm data
-docker compose run --rm pipeline
-```
+## Notebooks at a Glance
 
-Run proposed QRC simulator:
-
-```bash
-docker compose --profile quantum run --rm quantum-sim
-```
-
-Run Aer QRC check:
-
-```bash
-docker compose --profile quantum run --rm quantum-aer
-```
-
-Run IBM hardware QRC check:
-
-```bash
-QE_IBM_TOKEN="your_token" QE_IBM_INSTANCE="your_instance" \
-docker compose --profile quantum-hardware run --rm quantum-hardware
-```
-
-Start API:
-
-```bash
-docker compose up --build api
-```
-
-API checks:
-
-```bash
-curl http://localhost:8000/health
-curl http://localhost:8000/metrics
-curl http://localhost:8000/quantum/metrics
-curl http://localhost:8000/plots
-```
-
-## What Is Implemented
-
-Classical baselines:
-
-```text
-GARCH, HAR-RV, ARIMA, Gaussian HMM regimes, ESN, LSTM, XGBoost
-```
-
-Proposed quantum method:
-
-```text
-Dual-timescale QRC with two fixed transverse-field Ising reservoirs.
-Short reservoir: J=0.3, h=1.0, p=2.
-Long reservoir:  J=1.2, h=0.4, p=6.
-Statevector backend: Pauli/ZZ features plus entanglement-spectrum features.
-Aer/IBM backend: Pauli/ZZ expectation features only.
-Readout: StandardScaler + RidgeCV.
-```
-
-## Repository Structure
-
-```text
-src/quantumedge/data/           data loading and caching
-src/quantumedge/features/       feature engineering and splits
-src/quantumedge/models/         classical model modules
-src/quantumedge/quantum/        QRC reservoirs, encoders, features, readouts
-src/quantumedge/evaluation/     metrics
-src/quantumedge/visualization/  plots
-src/quantumedge/pipelines/      runnable workflows
-src/quantumedge/services/       data/API/quantum service entry points
-docs/architecture.md            architecture notes
-requirements/                   dependency files
-tests/                          smoke tests
-```
+| Notebook | Purpose | Key Output |
+|---|---|---|
+| `QuantumEdge_QRC_Financial.ipynb` | Main pipeline: data → features → readout → metrics | Sections 1–15 |
+| `QuantumEdge_QRC_MNIST.ipynb` | Expressivity benchmark across 5/10/15 qubits | Accuracy vs qubit count |
