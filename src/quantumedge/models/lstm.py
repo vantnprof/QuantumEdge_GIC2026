@@ -115,6 +115,30 @@ def run_lstm(
     return y_pred, loss_history
 
 
+def run_lstm_financial_log(financial_split: dict, **kwargs) -> tuple[np.ndarray, list]:
+    """Log-space LSTM: trains on log(RV) features and log(target_rv), outputs exp(pred).
+    Ensures positive predictions and valid QLIKE."""
+    raw_cols = ["rv_d", "rv_w", "rv_m", "log_ret", "vix", "gk", "vix_rv_spread"]
+    train = financial_split["train"]
+    test  = financial_split["test"]
+
+    def _log_features(df):
+        X = df[raw_cols].values.copy()
+        X[:, :3] = np.log(np.clip(X[:, :3], 1e-12, None))  # log rv_d, rv_w, rv_m
+        return X
+
+    y_tr_log = np.log(np.clip(train["target_rv"].values, 1e-12, None))
+    y_te_log = np.log(np.clip(test["target_rv"].values,  1e-12, None))
+
+    seq_len = kwargs.pop("seq_len", 22)
+    y_pred_log, losses = run_lstm(
+        _log_features(train), y_tr_log,
+        _log_features(test),  y_te_log,
+        seq_len=seq_len, **kwargs,
+    )
+    return np.exp(y_pred_log), losses
+
+
 def run_lstm_financial(financial_split: dict, **kwargs) -> tuple[np.ndarray, list]:
     feature_cols = ["rv_d", "rv_w", "rv_m", "log_ret", "vix", "gk", "vix_rv_spread"]
     train = financial_split["train"]

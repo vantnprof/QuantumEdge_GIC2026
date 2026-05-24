@@ -52,6 +52,22 @@ def run_xgboost_financial(financial_split: dict) -> tuple[np.ndarray, xgb.XGBReg
     )
 
 
+def run_xgboost_financial_log(financial_split: dict) -> tuple[np.ndarray, xgb.XGBRegressor]:
+    """Log-space XGBoost: log-transforms RV features and target, outputs exp(pred)."""
+    raw_cols = ["rv_d", "rv_w", "rv_m", "log_ret", "vix", "gk", "vix_rv_spread"]
+    train = financial_split["train"]
+    test  = financial_split["test"]
+
+    def _log_feats(df):
+        X = df[raw_cols].values.copy()
+        X[:, :3] = np.log(np.clip(X[:, :3], 1e-12, None))
+        return X
+
+    y_tr_log = np.log(np.clip(train["target_rv"].values, 1e-12, None))
+    y_pred_log, model = run_xgboost(_log_feats(train), y_tr_log, _log_feats(test))
+    return np.exp(y_pred_log), model
+
+
 def run_xgboost_vix(vix_split: dict) -> tuple[np.ndarray, xgb.XGBRegressor]:
     feature_cols = ["vix", "vix_w", "vix_m", "vix_log_ret"]
     train = vix_split["train"]
