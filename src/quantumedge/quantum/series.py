@@ -117,14 +117,57 @@ def build_chaotic_angles(
     return normalize_to_angles(raw, n_train=n_train)
 
 
+def project_chaotic_series_from_prepared(dataset: str, prepared: dict) -> np.ndarray:
+    """Return the exact normalized target sequence used by classical chaotic splits."""
+    name = dataset.lower().replace("-", "_")
+    if name == "mackey_glass":
+        split = prepared["mackey_glass_split"]
+    elif name == "lorenz":
+        split = prepared["lorenz_split"]
+    else:
+        raise ValueError(f"unsupported project chaotic dataset: {dataset}")
+
+    initial_feedback = float(split["X_train"][0, -1])
+    return np.concatenate(
+        [
+            np.array([initial_feedback], dtype=float),
+            np.asarray(split["y_train"], dtype=float),
+            np.asarray(split["y_test"], dtype=float),
+        ]
+    )
+
+
+def build_project_chaotic_angles(
+    dataset: str,
+    n_train: int,
+    n_test: int,
+) -> tuple[np.ndarray, MinMaxScaler]:
+    """Build QRC angles from the same chaotic split targets as the baselines."""
+    from quantumedge.data.loaders import load_all
+    from quantumedge.features.builders import prepare_all
+
+    prepared = prepare_all(load_all())
+    raw = project_chaotic_series_from_prepared(dataset, prepared)
+    required = n_train + n_test + 1
+    if len(raw) < required:
+        raise ValueError(f"{dataset} has {len(raw)} aligned rows, but {required} are required")
+    return normalize_to_angles(raw[:required], n_train=n_train)
+
+
 def financial_series_from_prepared(dataset: str, prepared: dict) -> np.ndarray:
     """Extract the scalar financial series proposed for QRC angle encoding."""
     name = dataset.lower()
     if name in {"sp500_rv", "oxford_man_rv"}:
-        rv = prepared["financial"]["rv"].to_numpy(dtype=float)
+        financial = prepared["financial"]
+        rv = financial["rv"].to_numpy(dtype=float)
+        final_target = float(financial["target_rv"].iloc[-1])
+        rv = np.concatenate([rv, [final_target]])
         return np.log(np.maximum(rv, 1e-10))
     if name == "vix":
-        vix = prepared["vix_df"]["vix"].to_numpy(dtype=float)
+        vix_df = prepared["vix_df"]
+        vix = vix_df["vix"].to_numpy(dtype=float)
+        final_target = float(vix_df["target_vix"].iloc[-1])
+        vix = np.concatenate([vix, [final_target]])
         return np.log(np.maximum(vix, 1e-10))
     raise ValueError(f"unsupported financial QRC dataset: {dataset}")
 

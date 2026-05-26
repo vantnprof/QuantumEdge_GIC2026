@@ -6,7 +6,6 @@ import warnings
 
 import numpy as np
 import pandas as pd
-import yfinance as yf
 from scipy.integrate import solve_ivp
 
 from quantumedge.config import ensure_runtime_dirs
@@ -30,6 +29,8 @@ def load_sp500() -> pd.DataFrame:
         df = pd.read_csv(path, index_col=0, parse_dates=True)
         print("[data] SP500: loaded from cache")
         return df
+
+    import yfinance as yf
 
     print("[data] SP500: downloading via yfinance …")
     df = yf.download("^GSPC", start=START, end=END, auto_adjust=True, progress=False,
@@ -56,6 +57,8 @@ def load_vix(sp500_index: pd.DatetimeIndex) -> pd.Series:
         s = pd.read_csv(path, index_col=0, parse_dates=True).squeeze()
         print("[data] VIX: loaded from cache")
         return s.reindex(sp500_index).ffill()
+
+    import yfinance as yf
 
     print("[data] VIX: downloading via yfinance …")
     df = yf.download("^VIX", start=START, end=END, auto_adjust=True, progress=False,

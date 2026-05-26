@@ -70,10 +70,14 @@ def make_reservoir_pair(
 def apply_ising_reservoir_layers(x_angle: float, config: ReservoirConfig) -> None:
     """Apply repeated RY encoding and transverse-field Ising Trotter layers."""
     import pennylane as qml
+    import numpy as np
+
+    angles = np.atleast_1d(np.asarray(x_angle, dtype=float))
+    n_features = len(angles)
 
     for _ in range(config.trotter_depth):
         for wire in range(config.n_qubits):
-            qml.RY(x_angle, wires=wire)
+            qml.RY(float(angles[wire % n_features]), wires=wire)
 
         for wire in range(config.n_qubits - 1):
             qml.IsingZZ(2.0 * config.coupling_j, wires=[wire, wire + 1])

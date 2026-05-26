@@ -57,6 +57,39 @@ def predict_regimes(model, state_map: dict, rv_series: np.ndarray) -> np.ndarray
     return np.array([state_map[int(s)] for s in raw_states])
 
 
+def causal_regime_posteriors(model, state_map: dict, rv_series: np.ndarray) -> np.ndarray:
+    """Return causal HMM posteriors `P(state_t | observations[0:t])`.
+
+    The output columns are sorted by volatility regime using `state_map`, so
+    column 0 is Low, column 1 is Medium, and column 2 is High.
+    """
+    from scipy.stats import norm
+
+    log_obs = np.log(np.asarray(rv_series, dtype=float) + 1e-10)
+    n = len(log_obs)
+    n_states = model.n_components
+    emissions = np.zeros((n, n_states), dtype=float)
+    for raw_state in range(n_states):
+        mu = float(model.means_[raw_state, 0])
+        sigma = float(np.sqrt(model.covars_[raw_state, 0, 0]))
+        emissions[:, raw_state] = norm.pdf(log_obs, mu, max(sigma, 1e-12))
+
+    alpha = np.zeros((n, n_states), dtype=float)
+    alpha[0] = model.startprob_ * emissions[0]
+    scale = alpha[0].sum()
+    alpha[0] /= scale if scale > 0 else 1.0
+
+    for idx in range(1, n):
+        alpha[idx] = (alpha[idx - 1] @ model.transmat_) * emissions[idx]
+        scale = alpha[idx].sum()
+        alpha[idx] /= scale if scale > 0 else 1.0
+
+    sorted_posteriors = np.zeros_like(alpha)
+    for raw_state, sorted_state in state_map.items():
+        sorted_posteriors[:, sorted_state] = alpha[:, raw_state]
+    return sorted_posteriors
+
+
 def classify_by_threshold(rv_pred: np.ndarray, thresholds: tuple) -> np.ndarray:
     """Classify RV forecasts into regimes using fixed RV thresholds.
 

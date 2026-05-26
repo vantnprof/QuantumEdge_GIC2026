@@ -105,10 +105,22 @@ python -m pip install -e . --no-deps
 # Classical baselines pipeline
 python -m quantumedge.pipelines.classical_baselines
 
+# Same classical benchmark through the shared benchmark config
+python scripts/run_classical_benchmark.py --no-write-plots
+
 # Quantum QRC pipeline
 python -m quantumedge.pipelines.quantum_qrc \
   --datasets mackey_glass lorenz \
   --backend statevector
+
+# Optional MNIST expressivity benchmark for report appendix / Phase 3 evidence
+python scripts/run_mnist_benchmark.py \
+  --qubits 5 10 15 \
+  --n-train 10000 \
+  --n-test 2000
+
+# Tiny smoke check for the MNIST benchmark code path
+python scripts/run_mnist_benchmark.py --quick-smoke
 ```
 
 ---
@@ -123,6 +135,86 @@ Noise test: Aer simulation with IBM Kingston depolarizing profile (p=0.003/gate,
 ---
 
 ## Generate The Report Figure
+
+One-command Phase II result script. This executes methods and builds the
+comparison figure from the metrics produced by the run:
+
+```bash
+python -m pip install -r requirements/base.txt
+python -m pip install -r requirements/quantum.txt
+python phaseII_result.py
+```
+
+Quick environment check. This runs only a tiny QRC job and still writes the
+same PNG/PDF/CSV artifact types:
+
+```bash
+python phaseII_result.py --quick-smoke
+```
+
+Outputs:
+
+```text
+artifacts/results/figures/phaseII_result.png
+artifacts/results/figures/phaseII_result.pdf
+artifacts/results/figures/phaseII_result_data.csv
+```
+
+The default Phase II run uses the notebook reservoir configuration:
+
+```text
+dataset: sp500_rv
+short reservoir: n=9, J=0.3, h=1.0, depth=2
+long reservoir : n=9, J=1.2, h=0.4, depth=6
+fairness       : QRC uses the same temporal train/test split as classical rows
+```
+
+For `sp500_rv` and `oxford_man_rv`, `phaseII_result.py` runs the notebook-style
+financial QRC variants:
+
+```text
+QRC Dual
+QRC Dual+Ent
+QRC Dual+Ent+Regime
+QRC Single+Ent
+QRC Dual+Ent Regime-Blend
+QRC Dual+Ent *
+QRC Dual+Ent+Regime *
+```
+
+The `*` variants use the QLIKE-optimised readout from the notebook. Classical
+rows come from the same classical benchmark pipeline.
+
+Use existing classical metrics but rerun the proposed QRC methods:
+
+```bash
+python phaseII_result.py \
+  --no-run-classical \
+  --classical-csv artifacts/results/metrics.csv \
+  --basename phaseII_result_reuse_classical
+```
+
+Run all supported datasets and write consolidated method-by-dataset results:
+
+```bash
+python phaseII_result.py \
+  --all-datasets \
+  --basename phaseII_all
+```
+
+All-dataset outputs:
+
+```text
+artifacts/results/phaseII_all_all_datasets_data.csv
+artifacts/results/phaseII_all_split_audit.csv
+artifacts/results/phaseII_all_coverage.csv
+artifacts/results/figures/phaseII_all_<dataset>_<target_type>.png
+artifacts/results/figures/phaseII_all_<dataset>_<target_type>.pdf
+artifacts/results/figures/phaseII_all_<dataset>_<target_type>_data.csv
+```
+
+Rows are comparable within the same `dataset` and `target_type`. The split
+audit CSV records the train/test pair used by each comparison group.
 
 Fast actual-run check. This runs QRC only on a tiny Mackey-Glass split and
 generates a figure from the metrics produced by that run:
@@ -140,14 +232,14 @@ python scripts/make_report_figure.py \
 ```
 
 Full 800-day report-style run for S&P 500 RV. This runs the classical pipeline
-and the QRC variants, then builds the figure from actual run metrics:
+and the QRC variants, then builds the figure from actual run metrics. By
+default the script forces QRC to use the same temporal train/test split as the
+classical benchmark when both are included.
 
 ```bash
 python scripts/make_report_figure.py \
   --dataset sp500_rv \
   --quantum-n-qubits 9 \
-  --quantum-n-train 3200 \
-  --quantum-n-test 800 \
   --progress-every 250 \
   --basename actual_sp500_800day
 ```
@@ -168,9 +260,20 @@ python scripts/make_report_figure.py \
   --no-run-classical \
   --classical-csv artifacts/results/metrics.csv \
   --quantum-n-qubits 5 \
+  --basename actual_sp500_qrc_5q
+```
+
+Run a smaller non-comparable QRC-only figure for debugging:
+
+```bash
+python scripts/make_report_figure.py \
+  --dataset sp500_rv \
+  --no-run-classical \
+  --no-match-classical-split \
+  --quantum-n-qubits 5 \
   --quantum-n-train 500 \
   --quantum-n-test 100 \
-  --basename actual_sp500_qrc_5q
+  --basename debug_sp500_qrc_5q
 ```
 
 Only recreate the old fixed-value presentation figure:

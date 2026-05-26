@@ -49,6 +49,10 @@ def build_financial_features(
     df["rv_d"] = df["rv"]
     df["rv_w"] = df["rv"].rolling(5, min_periods=5).mean()
     df["rv_m"] = df["rv"].rolling(22, min_periods=22).mean()
+    df["log_rv_d"] = np.log(df["rv_d"].clip(lower=1e-10))
+    df["log_rv_w"] = np.log(df["rv_w"].clip(lower=1e-10))
+    df["log_rv_m"] = np.log(df["rv_m"].clip(lower=1e-10))
+    df["log_gk"] = np.log(df["gk"].clip(lower=1e-10))
 
     # VIX
     df["vix"] = vix.reindex(df.index).ffill()
