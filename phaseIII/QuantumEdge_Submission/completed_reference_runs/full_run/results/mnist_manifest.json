@@ -1,0 +1,14 @@
+{
+  "generated_utc": "2026-07-17T03:00:15.522467+00:00",
+  "canonical_mnist": true,
+  "data_source": "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
+  "profile": "FULL",
+  "qubits": [
+    5,
+    10,
+    15
+  ],
+  "train_per_class": 10,
+  "test_per_class": 5,
+  "result_file": "results/mnist_qrc_metrics.csv"
+}

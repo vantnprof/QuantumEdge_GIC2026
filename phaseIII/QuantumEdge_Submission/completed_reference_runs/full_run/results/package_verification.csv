@@ -1,0 +1,46 @@
+Category,Item,Status,Detail
+REQUIRED,README.md,PASS,3493 bytes
+REQUIRED,AI_USE_DISCLOSURE.md,PASS,799 bytes
+REQUIRED,notebooks/01_QuantumEdge_Reproducibility.ipynb,PASS,109592 bytes
+REQUIRED,notebooks/02_QuantumEdge_Graphical_Results.ipynb,PASS,42930 bytes
+REQUIRED,notebooks/03_QuantumEdge_Package_Verification.ipynb,PASS,13901 bytes
+REQUIRED,notebooks/04_QuantumEdge_MNIST_QRC_Benchmark.ipynb,PASS,20236 bytes
+REQUIRED,paper/QuantumEdge_GIC2026_Phase3_Updated_Paper.pdf,PASS,596764 bytes
+REQUIRED,data/market_data.csv,PASS,256024 bytes
+REQUIRED,data/oxman_spx.csv,PASS,49388 bytes
+REQUIRED,requirements.txt,PASS,220 bytes
+REQUIRED,environment.yml,PASS,397 bytes
+REQUIRED,qbraid_skill/quantumedge_phase3/SKILL.md,PASS,1315 bytes
+REQUIRED,qbraid_skill/quantumedge_phase3/scripts/run_quantumedge.py,PASS,1813 bytes
+RESULT,results/headline_metrics.csv,PASS,1039 bytes
+RESULT,results/oxford_man_metrics.csv,PASS,241 bytes
+RESULT,results/ablation.csv,PASS,353 bytes
+RESULT,results/reservoir_scaling.csv,PASS,428 bytes
+RESULT,results/encoding_density.csv,PASS,189 bytes
+RESULT,results/shot_budget.csv,PASS,204 bytes
+RESULT,results/noise_zne.csv,PASS,215 bytes
+RESULT,results/amplitude_damping.csv,PASS,262 bytes
+RESULT,results/forecast_predictions.csv,PASS,258945 bytes
+RESULT,results/forecast_significance.csv,PASS,2836 bytes
+RESULT,results/transition_metrics.csv,PASS,489 bytes
+RESULT,results/hardware_validation.json,PASS,827 bytes
+RESULT,results/hardware_observables.csv,PASS,5980 bytes
+RESULT,results/mnist_qrc_metrics.csv,PASS,499 bytes
+RESULT,results/mnist_manifest.json,PASS,334 bytes
+RESULT,results/final_audit.csv,PASS,803 bytes
+RESULT,results/run_manifest.json,PASS,4286 bytes
+MNIST,Canonical MNIST dataset,PASS,https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz
+MNIST,Qubit coverage 5/10/15,PASS,"[5, 10, 15]"
+MNIST,Accuracy and macro-F1 present,PASS,"['dataset', 'qubits', 'reservoir_features', 'train_samples', 'test_samples', 'accuracy', 'balanced_accuracy', 'macro_f1', 'feature_wall_seconds', 'readout_wall_seconds', 'seed']"
+README,Required content,PASS,missing=[]
+README,Working Launch on qBraid button,FAIL,Launch URL missing or still contains a placeholder
+COVER,Official GIC cover page included,PASS,['/home/jovyan/phase 3 third run/paper/GIC_2026_Official_Cover_Page.docx']
+HARDWARE,39 observable pairs,PASS,39
+HARDWARE,Correlation recalculates,PASS,csv=0.9963317843995502; json=0.9963317843995501
+HARDWARE,MAE recalculates,PASS,csv=0.030355188364938872; json=0.030355188364938883
+HARDWARE,Wall-clock present,PASS,73.65117383003235
+NUMERICAL,QRC Dual+Pauli+FB (calibrated) RMSE,PASS,actual=7.531898939028988e-05; reference=7.532e-05; rtol=0.02
+NUMERICAL,QRC Dual+Pauli+FB (calibrated) QLIKE,PASS,actual=0.3260621720650615; reference=0.3261; rtol=0.04
+NUMERICAL,QRC Dual+Pauli+FB RMSE,PASS,actual=7.724618410489558e-05; reference=7.725e-05; rtol=0.02
+NUMERICAL,HAR-RV RMSE,PASS,actual=8.004708727359322e-05; reference=8.005e-05; rtol=0.02
+SECURITY,Embedded credential scan,PASS,no likely embedded credentials found

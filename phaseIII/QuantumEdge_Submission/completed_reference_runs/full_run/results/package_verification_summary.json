@@ -1,0 +1,8 @@
+{
+  "generated_utc": "2026-07-17T03:25:59.171142+00:00",
+  "python": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "pass": 44,
+  "warn": 0,
+  "fail": 1,
+  "report": "results/package_verification.csv"
+}

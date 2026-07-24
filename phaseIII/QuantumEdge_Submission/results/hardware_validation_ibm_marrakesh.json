@@ -1,0 +1,31 @@
+{
+  "timestamp_utc": "2026-07-17T02:46:51.107942+00:00",
+  "backend": "ibm_marrakesh",
+  "declared_primary_backend": "ibm_fez",
+  "validation_role": "independent replication and artifact recovery",
+  "qubits": 7,
+  "reservoir_p": 2,
+  "transpiled_depth": 71,
+  "transpiled_depths": [
+    71,
+    70,
+    70
+  ],
+  "shots_per_circuit": 4096,
+  "windows": 3,
+  "wall_seconds": 73.65117383003235,
+  "observables": 39,
+  "feature_correlation": 0.9963317843995501,
+  "feature_mae": 0.030355188364938883,
+  "job_ids": [
+    "d9cpek9htsac739c2l80",
+    "d9cpeqkinv1c73ao3i20",
+    "d9cpf0ineu4c739m9d0g"
+  ],
+  "job_ledger": "results/hardware_job_ledger_ibm_marrakesh.json",
+  "backend_specific_observables": "results/hardware_observables_ibm_marrakesh.csv",
+  "canonical_backups": {
+    "summary": null,
+    "observables": null
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "Fs_sha256": "91e56f73580607363a37aa71f2529a6ac5e9bea60f8b94a3beec144786141d86",
+  "feedback": true,
+  "gamma": 0.5,
+  "long": {
+    "J": 1.2,
+    "h": 0.4,
+    "p": 6
+  },
+  "mem_dim": 3,
+  "n_qubits": 9,
+  "pauli_only": true,
+  "short": {
+    "J": 0.3,
+    "h": 1.0,
+    "p": 2
+  }
+}

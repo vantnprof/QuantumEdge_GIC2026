@@ -1,0 +1,23 @@
+{
+  "generated_from_submitted_files": true,
+  "reference_fallbacks_used": [],
+  "headline_best_rmse_model": "QRC Dual+Pauli+FB (calibrated)",
+  "headline_best_qlike_model": "QRC Dual+Pauli+FB (calibrated)",
+  "oxford_best_rmse_model": "QRC Dual+Pauli+FB",
+  "hardware_backend": "ibm_marrakesh",
+  "hardware_feature_correlation": 0.9963317843995501,
+  "hardware_feature_mae": 0.030355188364938883,
+  "dashboard_figures": [
+    "dashboard_figures/01_headline_rmse.png",
+    "dashboard_figures/02_headline_qlike.png",
+    "dashboard_figures/03_regime_detection.png",
+    "dashboard_figures/04_oxford_rmse.png",
+    "dashboard_figures/05_oxford_qlike.png",
+    "dashboard_figures/06_ablation.png",
+    "dashboard_figures/07_scaling.png",
+    "dashboard_figures/08_encoding_density.png",
+    "dashboard_figures/09_shot_budget.png",
+    "dashboard_figures/10_noise_zne.png",
+    "dashboard_figures/11_hardware_agreement.png"
+  ]
+}
