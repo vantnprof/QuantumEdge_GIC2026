@@ -1,0 +1,22 @@
+name: quantumedge-phase3
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - numpy=2.5.1
+  - pandas=3.0.3
+  - scipy
+  - scikit-learn=1.9.0
+  - statsmodels=0.14.6
+  - matplotlib=3.11.0
+  - jupyter
+  - nbconvert
+  - ipykernel
+  - pip:
+      - qiskit==2.4.2
+      - qiskit-aer==0.17.2
+      - qiskit-ibm-runtime==0.41.1
+      - yfinance==1.5.1
+      - arch==8.0.0
+      - python-docx

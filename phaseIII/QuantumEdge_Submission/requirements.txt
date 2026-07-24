@@ -1,0 +1,15 @@
+numpy==2.5.1
+pandas==3.0.3
+scipy
+qiskit==2.4.2
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.41.1
+scikit-learn==1.9.0
+statsmodels==0.14.6
+matplotlib==3.11.0
+yfinance==1.5.1
+arch==8.0.0
+jupyter
+nbconvert
+ipykernel
+python-docx

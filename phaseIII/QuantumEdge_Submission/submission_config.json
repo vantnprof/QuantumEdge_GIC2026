@@ -1,0 +1,15 @@
+{
+  "team": "QuantumEdge",
+  "project": "Dual-Timescale Quantum Reservoir Computing for Financial Volatility Forecasting",
+  "track": "Track A: Financial Volatility Prediction",
+  "public_github_repository": "https://github.com/vantnprof/QuantumEdge_GIC2026.git",
+  "public_github_branch": "phase3",
+  "primary_hardware_backend": "ibm_fez",
+  "replication_hardware_backend": "ibm_marrakesh",
+  "notebook_order": [
+    "notebooks/01_QuantumEdge_Reproducibility.ipynb",
+    "notebooks/04_QuantumEdge_MNIST_QRC_Benchmark.ipynb",
+    "notebooks/02_QuantumEdge_Graphical_Results.ipynb",
+    "notebooks/03_QuantumEdge_Package_Verification.ipynb"
+  ]
+}

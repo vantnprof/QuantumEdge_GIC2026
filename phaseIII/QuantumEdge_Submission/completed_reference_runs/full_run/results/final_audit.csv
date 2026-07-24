@@ -1,0 +1,12 @@
+Check,Status,Actual,Expected,Note
+Sample count,PASS,3750.0,3750.0,
+Test-day count,PASS,750.0,750.0,
+Calibrated QRC RMSE,PASS,7.531898939028988e-05,7.532e-05,
+Calibrated QRC QLIKE,PASS,0.32606217206506155,0.3261,
+Raw QRC RMSE,PASS,7.724618410489558e-05,7.725e-05,
+Raw QRC QLIKE,PASS,0.37935661995866987,0.3794,
+Calm/turbulent accuracy,PASS,0.7813333333333333,0.781,
+Majority baseline,PASS,0.6466666666666666,0.647,
+Oxford-Man QRC RMSE,PASS,5.593712177647873e-05,5.594e-05,
+IBM feature correlation,PASS,0.9963317843995501,0.989,Compared with the locked Fez reference; current backend is ibm_marrakesh. Actual replication values are retained.
+IBM feature MAE,PASS,0.030355188364938883,0.0569,Compared with the locked Fez reference; current backend is ibm_marrakesh. Actual replication values are retained.

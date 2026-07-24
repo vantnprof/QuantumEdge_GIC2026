@@ -1,0 +1,17 @@
+comparison,analysis,metric,estimate,ci_low,ci_high,statistic,p_value,detail
+QRC calibrated vs HAR-RV,Diebold-Mariano,squared_error,-7.345860182116515e-10,,,-2.993895977539014,0.0027543983447584925,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs HAR-RV,Diebold-Mariano,qlike,-0.08681826102826617,,,-2.9357283209326535,0.0033276562174245077,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs HAR-RV,Moving-block bootstrap,rmse,-4.245080246927818e-06,-6.433499467098505e-06,-2.0535246255295775e-06,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs HAR-RV,Moving-block bootstrap,qlike,-0.06873562819000434,-0.11054702861651845,-0.030791499319682773,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs ESN,Diebold-Mariano,squared_error,-7.163233890608365e-10,,,-3.4835744049704447,0.00049476557348637,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs ESN,Diebold-Mariano,qlike,-0.1327400293897211,,,-4.766741631065233,1.8722915517501229e-06,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs ESN,Moving-block bootstrap,rmse,-4.882254052739713e-06,-7.455531137140194e-06,-2.3999092514575307e-06,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs ESN,Moving-block bootstrap,qlike,-0.12281010041714593,-0.16773385167681124,-0.07403332463238008,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs LSTM,Diebold-Mariano,squared_error,-1.1012343087211692e-09,,,-2.6930738283869546,0.007079659015901452,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs LSTM,Diebold-Mariano,qlike,-0.103649652090434,,,-3.545690783195103,0.0003915854122113532,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs LSTM,Moving-block bootstrap,rmse,-6.125540317345945e-06,-9.865733595907055e-06,-2.4704374123525074e-06,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs LSTM,Moving-block bootstrap,qlike,-0.08786929121683121,-0.14274881511655235,-0.03812661141892405,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs Persistence,Diebold-Mariano,squared_error,-3.4095105594724967e-09,,,-4.67736274841568,2.9058794509779705e-06,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs Persistence,Diebold-Mariano,qlike,-0.3445967546830462,,,-6.2805283123371085,3.3742442404275953e-10,Newey-West lag 9; negative loss differential favors QRC
+QRC calibrated vs Persistence,Moving-block bootstrap,rmse,-1.9835171875478892e-05,-2.537753363846218e-05,-1.419118456335147e-05,,,95% interval; block length 22; negative favors QRC
+QRC calibrated vs Persistence,Moving-block bootstrap,qlike,-0.327623893714184,-0.42375651938631687,-0.24116736732026403,,,95% interval; block length 22; negative favors QRC

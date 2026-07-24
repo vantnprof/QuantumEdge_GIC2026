@@ -1,0 +1,176 @@
+{
+  "config": {
+    "allow_download": true,
+    "amplitude_levels": [
+      0.0,
+      0.001,
+      0.005,
+      0.01,
+      0.02
+    ],
+    "bias_correction": true,
+    "bootstrap_block_length": 22,
+    "bootstrap_repetitions": 2000,
+    "data_csv": "data/market_data.csv",
+    "declared_primary_backend": "ibm_fez",
+    "dt": 1.0,
+    "enc_fracs": [
+      0.34,
+      0.67,
+      1.0
+    ],
+    "enc_high": 1.5707963267948966,
+    "enc_low": -1.5707963267948966,
+    "ent_keep": 8,
+    "features_cache": "data/qrc_pauli_features.npy",
+    "features_meta": "data/qrc_pauli_features.meta.json",
+    "feedback": true,
+    "force_rebuild_features": false,
+    "gamma": 0.5,
+    "hardware_validation_role": "independent replication and artifact recovery",
+    "headline_pauli_only": true,
+    "hw_n_qubits": 7,
+    "hw_p": 2,
+    "hw_windows": 3,
+    "ibm_backend": "ibm_marrakesh",
+    "long": {
+      "J": 1.2,
+      "h": 0.4,
+      "p": 6
+    },
+    "mem_dim": 3,
+    "n_qubits": 9,
+    "noise_levels": [
+      0.005,
+      0.01,
+      0.02
+    ],
+    "noise_n": 5,
+    "noise_windows": 8,
+    "oxford_csv": "data/oxman_spx.csv",
+    "ridge_alphas": [
+      0.0001,
+      0.00019573417814876596,
+      0.0003831186849557289,
+      0.0007498942093324559,
+      0.0014677992676220704,
+      0.0028729848333536655,
+      0.005623413251903491,
+      0.011006941712522103,
+      0.021544346900318846,
+      0.042169650342858224,
+      0.0825404185268019,
+      0.16155980984398746,
+      0.31622776601683794,
+      0.618965818891261,
+      1.2115276586285901,
+      2.371373705661655,
+      4.641588833612782,
+      9.08517575651688,
+      17.78279410038923,
+      34.80700588428413,
+      68.12920690579622,
+      133.3521432163324,
+      261.01572156825387,
+      510.89697745069344,
+      1000.0
+    ],
+    "run_garch": true,
+    "run_lstm": true,
+    "scan_n": [
+      5,
+      7,
+      9,
+      11
+    ],
+    "scan_p": [
+      2,
+      4
+    ],
+    "short": {
+      "J": 0.3,
+      "h": 1.0,
+      "p": 2
+    },
+    "shot_list": [
+      256,
+      1024,
+      4096
+    ],
+    "shots": 4096,
+    "study_sample": null,
+    "train_frac": 0.8,
+    "use_synthetic": false,
+    "window": 22,
+    "zne_scales": [
+      1,
+      3,
+      5
+    ]
+  },
+  "data_source": "committed CSV (data/market_data.csv)",
+  "declared_primary_backend": "ibm_fez",
+  "generated_utc": "2026-07-17T02:47:29.635796+00:00",
+  "hardware_replication_backend": "ibm_marrakesh",
+  "hardware_summary": {
+    "backend": "ibm_marrakesh",
+    "backend_specific_observables": "results/hardware_observables_ibm_marrakesh.csv",
+    "canonical_backups": {
+      "observables": null,
+      "summary": null
+    },
+    "declared_primary_backend": "ibm_fez",
+    "feature_correlation": 0.9963317843995501,
+    "feature_mae": 0.030355188364938883,
+    "job_ids": [
+      "d9cpek9htsac739c2l80",
+      "d9cpeqkinv1c73ao3i20",
+      "d9cpf0ineu4c739m9d0g"
+    ],
+    "job_ledger": "results/hardware_job_ledger_ibm_marrakesh.json",
+    "observables": 39,
+    "qubits": 7,
+    "reservoir_p": 2,
+    "shots_per_circuit": 4096,
+    "timestamp_utc": "2026-07-17T02:46:51.107942+00:00",
+    "transpiled_depth": 71,
+    "transpiled_depths": [
+      71,
+      70,
+      70
+    ],
+    "validation_role": "independent replication and artifact recovery",
+    "wall_seconds": 73.65117383003235,
+    "windows": 3
+  },
+  "hardware_validation_role": "independent replication and artifact recovery",
+  "market_data_sha256": "f388cc407ea87942fde02bb346c22f1308da23f5196747c25639742da3570bae",
+  "oxford_data_sha256": "17addd1e774172715694c5e554be93a4b35e22b49372b5e1119738ab05b841cb",
+  "package_versions": {
+    "arch": "8.0.0",
+    "matplotlib": "3.11.0",
+    "numpy": "2.5.1",
+    "pandas": "3.0.3",
+    "qiskit": "2.4.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.41.1",
+    "scikit-learn": "1.9.0",
+    "statsmodels": "0.14.6",
+    "yfinance": "1.5.1"
+  },
+  "reference_results": {
+    "hardware_corr": 0.989,
+    "hardware_mae": 0.0569,
+    "majority_acc": 0.647,
+    "oxford_qrc_rmse": 5.594e-05,
+    "qrc_cal_qlike": 0.3261,
+    "qrc_cal_rmse": 7.532e-05,
+    "qrc_raw_qlike": 0.3794,
+    "qrc_raw_rmse": 7.725e-05,
+    "regime2_acc": 0.781,
+    "samples": 3750,
+    "test_days": 750
+  },
+  "run_profile": "FULL",
+  "seed": 7
+}

@@ -1,0 +1,55 @@
+QuantumEdge Phase 3 — Submission Checklist
+Last updated: 2026-07-24
+
+[x] Notebook 1 clean copy has RUN_PROFILE='FULL' and RUN_HARDWARE_NOW=False
+      Verified: notebooks/01_QuantumEdge_Reproducibility.ipynb
+
+[x] Notebook 4 MNIST benchmark executed at 5/10/15 qubits
+      Verified: completed_reference_runs/full_run/results/mnist_qrc_metrics.csv
+      Results: q5=32%, q10=60%, q15=58%
+
+[x] data/market_data.csv and data/oxman_spx.csv included
+      Verified: both present in data/
+
+[x] results/headline_metrics.csv and results/oxford_man_metrics.csv included
+      Location: completed_reference_runs/full_run/results/
+
+[x] results/forecast_predictions.csv and results/forecast_significance.csv included
+      Location: completed_reference_runs/full_run/results/
+
+[x] results/transition_metrics.csv included
+      Location: completed_reference_runs/full_run/results/
+
+[x] results/noise_zne.csv and results/amplitude_damping.csv included
+      Location: completed_reference_runs/full_run/results/
+
+[x] IBM hardware_validation.json and hardware_observables.csv included
+      Location: results/ (for notebooks) and completed_reference_runs/full_run/results/
+
+[x] README contains a working Launch on qBraid URL, not a placeholder
+      URL: https://account.qbraid.com?gitHubUrl=https://github.com/vantnprof/QuantumEdge_GIC2026.git&branch=phase3
+      NOTE: Live only after Van pushes the phase3 branch and sets it as default
+
+[x] qBraid Skill included
+      Location: qbraid_skill/quantumedge_phase3/
+
+[x] API keys/tokens absent
+      Verified: IBM_JOB_ID="" in notebook 1; credentials via getpass only; no tokens in any file
+
+[x] AI-use disclosure retained and team-reviewed
+      Location: AI_USE_DISCLOSURE.md
+
+[ ] Official GIC cover page prepended to paper without recreation
+      Cover page present: docs/GIC_2026_Official_Cover_Page.docx
+      Paper present: docs/QuantumEdge_GIC2026_Phase3_Report.pdf
+      ACTION NEEDED: Combine cover page + paper into single PDF for submission ZIP
+
+[ ] Paper metrics verified against Phase 3 results
+      ACTION NEEDED: Confirm paper cites RMSE=7.53e-05 (calibrated QRC), not Phase 2 values
+
+[ ] phase3 branch pushed to vantnprof/QuantumEdge_GIC2026 and set as default
+      ACTION NEEDED: Van to push QuantumEdge_Submission/ contents as phase3 branch root
+
+[ ] Final ZIP assembled
+      Name must be: QuantumEdge_Challenge_Phase3.zip
+      ACTION NEEDED: Build after all above items are checked
