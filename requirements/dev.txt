@@ -1,4 +1,0 @@
--r base.txt
--r api.txt
--r quantum.txt
-pytest>=8.0

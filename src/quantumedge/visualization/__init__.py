@@ -1,1 +1,0 @@
-"""Plot generation helpers."""

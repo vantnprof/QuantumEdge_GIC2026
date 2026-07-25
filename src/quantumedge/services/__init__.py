@@ -1,1 +1,0 @@
-"""Microservice entry points."""
