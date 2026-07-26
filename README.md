@@ -1,6 +1,7 @@
 # QuantumEdge — GIC 2026 Phase 3
 
-[![Launch on qBraid](https://img.shields.io/badge/Launch%20on-qBraid-6f42c1)](https://account.qbraid.com?gitHubUrl=https://github.com/vantnprof/QuantumEdge_GIC2026.git&branch=phase3)
+[<img src="https://qbraid-static.s3.amazonaws.com/logos/Launch_on_qBraid_black.png" width="150">](https://account.qbraid.com?gitHubUrl=https://github.com/vantnprof/QuantumEdge_GIC2026.git&branch=phase3)
+
 
 **Team:** QuantumEdge  
 **Track:** Track A — Financial Volatility Prediction  
